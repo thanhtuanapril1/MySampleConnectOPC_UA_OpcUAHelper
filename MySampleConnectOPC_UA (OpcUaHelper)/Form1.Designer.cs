@@ -37,6 +37,7 @@
             btnWrite = new Button();
             btnRead = new Button();
             groupBox1 = new GroupBox();
+            btnBrowseNode = new Button();
             lblDataType = new Label();
             lblValue = new Label();
             btnUnsubscribe = new Button();
@@ -66,7 +67,6 @@
             tbxDataType1 = new TextBox();
             tbxValue1 = new TextBox();
             lblConnectStatus = new Label();
-            btnBrowseNode = new Button();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             SuspendLayout();
@@ -146,7 +146,6 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(btnBrowseNode);
             groupBox1.Controls.Add(lblDataType);
             groupBox1.Controls.Add(lblValue);
             groupBox1.Controls.Add(lblTag);
@@ -162,10 +161,20 @@
             groupBox1.Enabled = false;
             groupBox1.Location = new Point(12, 89);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(410, 240);
+            groupBox1.Size = new Size(450, 236);
             groupBox1.TabIndex = 3;
             groupBox1.TabStop = false;
             groupBox1.Text = "Single Tag";
+            // 
+            // btnBrowseNode
+            // 
+            btnBrowseNode.Location = new Point(178, 37);
+            btnBrowseNode.Name = "btnBrowseNode";
+            btnBrowseNode.Size = new Size(90, 23);
+            btnBrowseNode.TabIndex = 4;
+            btnBrowseNode.Text = "BrowseNode";
+            btnBrowseNode.UseVisualStyleBackColor = true;
+            btnBrowseNode.Click += btnBrowseNode_Click;
             // 
             // lblDataType
             // 
@@ -259,7 +268,7 @@
             groupBox2.Controls.Add(tbxDataType1);
             groupBox2.Controls.Add(tbxValue1);
             groupBox2.Enabled = false;
-            groupBox2.Location = new Point(461, 89);
+            groupBox2.Location = new Point(12, 348);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(450, 240);
             groupBox2.TabIndex = 3;
@@ -430,21 +439,12 @@
             lblConnectStatus.TabIndex = 2;
             lblConnectStatus.Text = "Disconnect";
             // 
-            // btnBrowseNode
-            // 
-            btnBrowseNode.Location = new Point(314, 42);
-            btnBrowseNode.Name = "btnBrowseNode";
-            btnBrowseNode.Size = new Size(90, 23);
-            btnBrowseNode.TabIndex = 4;
-            btnBrowseNode.Text = "BrowseNode";
-            btnBrowseNode.UseVisualStyleBackColor = true;
-            btnBrowseNode.Click += btnBrowseNode_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(948, 352);
+            ClientSize = new Size(485, 631);
+            Controls.Add(btnBrowseNode);
             Controls.Add(lblConnectStatus);
             Controls.Add(lblServerAddress);
             Controls.Add(groupBox2);

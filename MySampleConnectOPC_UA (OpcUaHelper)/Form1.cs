@@ -2,6 +2,7 @@ using Microsoft.VisualBasic;
 using Opc.Ua;
 using Opc.Ua.Client;
 using OpcUaHelper;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -36,6 +37,7 @@ namespace ConnectOPC_UA
                     groupBox2.Enabled = true;
                     btnDisonnect.Enabled = true;
                     btnConnect.Enabled = false;
+                    lblConnectStatus.Text = "Connected";
                 }
             }
             catch (Exception ex)
@@ -55,6 +57,7 @@ namespace ConnectOPC_UA
                     groupBox2.Enabled = false;
                     btnDisonnect.Enabled = false;
                     btnConnect.Enabled = true;
+                    lblConnectStatus.Text = "Disconnected";
                 }
             }
             catch (Exception ex)
@@ -288,11 +291,53 @@ namespace ConnectOPC_UA
                 }
 
                 Console.ResetColor();
+
+                //Browse all from server. Studying. Use break point function (F9) to check return value of "reff"
+                ReferenceDescriptionCollection reff = GetReferenceDescriptionCollection(new NodeId(ObjectIds.ObjectsFolder));
+                ReferenceDescriptionCollection reff2 = GetReferenceDescriptionCollection(new NodeId("ns=2;s=Channel1"));
+                ReferenceDescriptionCollection reff3 = GetReferenceDescriptionCollection(new NodeId("ns=2;s=Channel1.Device1"));
+                ReferenceDescriptionCollection reff4 = GetReferenceDescriptionCollection(new NodeId("ns=2;s=Channel1.Device1.Tag1"));
+                foreach (var item in reff)
+                {
+                    //Process here
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
+        }
+        private ReferenceDescriptionCollection GetReferenceDescriptionCollection(NodeId sourceId)
+        {
+            TaskCompletionSource<ReferenceDescriptionCollection> task = new TaskCompletionSource<ReferenceDescriptionCollection>();
+
+            // find all of the components of the node.
+            BrowseDescription nodeToBrowse1 = new BrowseDescription();
+
+            nodeToBrowse1.NodeId = sourceId;
+            nodeToBrowse1.BrowseDirection = BrowseDirection.Forward;
+            nodeToBrowse1.ReferenceTypeId = ReferenceTypeIds.Aggregates;
+            nodeToBrowse1.IncludeSubtypes = true;
+            nodeToBrowse1.NodeClassMask = (uint)(NodeClass.Object | NodeClass.Variable | NodeClass.Method | NodeClass.ReferenceType | NodeClass.ObjectType | NodeClass.View | NodeClass.VariableType | NodeClass.DataType);
+            nodeToBrowse1.ResultMask = (uint)BrowseResultMask.All;
+
+            // find all nodes organized by the node.
+            BrowseDescription nodeToBrowse2 = new BrowseDescription();
+
+            nodeToBrowse2.NodeId = sourceId;
+            nodeToBrowse2.BrowseDirection = BrowseDirection.Forward;
+            nodeToBrowse2.ReferenceTypeId = ReferenceTypeIds.Organizes;
+            nodeToBrowse2.IncludeSubtypes = true;
+            nodeToBrowse2.NodeClassMask = (uint)(NodeClass.Object | NodeClass.Variable | NodeClass.Method | NodeClass.View | NodeClass.ReferenceType | NodeClass.ObjectType | NodeClass.VariableType | NodeClass.DataType);
+            nodeToBrowse2.ResultMask = (uint)BrowseResultMask.All;
+
+            BrowseDescriptionCollection nodesToBrowse = new BrowseDescriptionCollection();
+            nodesToBrowse.Add(nodeToBrowse1);
+            nodesToBrowse.Add(nodeToBrowse2);
+
+            // fetch references from the server.
+            ReferenceDescriptionCollection references = FormUtils.Browse(myClient.Session, nodesToBrowse, false);
+            return references;
         }
     }
 }
